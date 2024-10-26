@@ -9,6 +9,7 @@ builds:
   - id: build-all-platforms
     goos:
       - windows
+      - linux
       - darwin
     goarch:
       - amd64
