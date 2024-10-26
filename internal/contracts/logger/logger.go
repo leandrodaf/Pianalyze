@@ -15,6 +15,9 @@ type Field interface {
 	String(key string, val string) Field   // Adds a string field to the log entry.
 	Time(key string, val time.Time) Field  // Adds a time field to the log entry.
 	Int64(key string, val int64) Field     // Adds an int64 field to the log entry.
+	Error(key string, val error) Field     // **Adicionado**: Adds an error field to the log entry.
+	Uint64(key string, val uint64) Field
+	Uint8(key string, val uint8) Field
 }
 
 // Logger provides methods for logging messages at different levels.

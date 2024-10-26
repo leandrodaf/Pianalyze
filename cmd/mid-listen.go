@@ -35,7 +35,7 @@ func Start() {
 	midiClient.StartCapture(eventChannel.GetChannel())
 	StartEventPublishing(eventChannel, hub, topicName)
 
-	latencyInterval := 5 * time.Second
+	latencyInterval := 120 * time.Second
 
 	listenerManager := SetupListenerManager(hub, topicName, processedTopicName, logger, latencyInterval)
 	listenerManager.Start()

@@ -35,6 +35,16 @@ func (z *ZapField) Int64(key string, val int64) logger.Field {
 	return z
 }
 
+func (z *ZapField) Uint64(key string, val uint64) logger.Field {
+	z.fields = append(z.fields, zap.Uint64(key, val))
+	return z
+}
+
+func (z *ZapField) Uint8(key string, val uint8) logger.Field {
+	z.fields = append(z.fields, zap.Uint8(key, val))
+	return z
+}
+
 func (z *ZapField) Float64(key string, val float64) logger.Field {
 	z.fields = append(z.fields, zap.Float64(key, val))
 	return z
@@ -47,6 +57,12 @@ func (z *ZapField) String(key string, val string) logger.Field {
 
 func (z *ZapField) Time(key string, val time.Time) logger.Field {
 	z.fields = append(z.fields, zap.Time(key, val))
+	return z
+}
+
+// **Implementação do método Error**
+func (z *ZapField) Error(key string, val error) logger.Field {
+	z.fields = append(z.fields, zap.NamedError(key, val))
 	return z
 }
 

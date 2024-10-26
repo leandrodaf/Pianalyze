@@ -12,6 +12,7 @@ import (
 
 // NewMIDIClient returns an instance of ClientMIDI based on the current operating system.
 func NewMIDIClient(logger logger.Logger) (midi.ClientMIDI, error) {
+	logger.Info("Current OS: " + runtime.GOOS)
 	switch runtime.GOOS {
 	case "darwin":
 		return mididarwin.NewMIDIClient(logger)
