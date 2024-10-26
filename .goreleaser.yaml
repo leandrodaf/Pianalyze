@@ -6,43 +6,38 @@ before:
     - go generate ./...
 
 builds:
-  - env:
-      - CGO_ENABLED=0
+  - id: build-all-platforms
     goos:
-      - linux
       - windows
       - darwin
     goarch:
       - amd64
       - arm64
+    env:
+      - CGO_ENABLED=1
+    flags:
+      - -trimpath
 
 archives:
-  - format: tar.gz
-    name_template: >-
-      {{ .ProjectName }}_
-      {{- title .Os }}_
-      {{- if eq .Arch "amd64" }}x86_64
-      {{- else if eq .Arch "386" }}i386
-      {{- else }}{{ .Arch }}{{ end }}
-      {{- if .Arm }}v{{ .Arm }}{{ end }}
+  - id: default
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format: tar.gz
+    builds:
+      - build-all-platforms
+    files:
+      - LICENSE*
+      - README*
     format_overrides:
       - goos: windows
         format: zip
 
-changelog:
-  sort: asc
-  filters:
-    exclude:
-      - "^docs:"
-      - "^test:"
-
 checksum:
   name_template: "checksums.txt"
-
-snapshot:
-  name_template: "{{ .Tag }}-{{ .ShortCommit }}"
 
 release:
   github:
     owner: leandrodaf
     name: Pianalyze
+
+metadata:
+  mod_timestamp: "{{ .CommitTimestamp }}"
