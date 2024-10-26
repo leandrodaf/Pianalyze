@@ -1,0 +1,33 @@
+# EditorConfig helps maintain consistent coding styles for multiple developers
+# working on the same project across various editors and IDEs.
+root = true
+
+# Core settings for all files
+[*]
+charset = utf-8                    # Use UTF-8 encoding
+end_of_line = lf                   # Use LF for line endings
+insert_final_newline = true        # Ensure files end with a newline
+trim_trailing_whitespace = true    # Trim trailing whitespace on save
+
+# Settings for Go files
+[*.go]
+indent_style = tab                 # Use tabs for indentation in Go
+indent_size = 8                    # Go recommends tabs with a visual width of 8 spaces
+max_line_length = 120              # Set a soft limit for line length to 120 characters
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Settings for Markdown files
+[*.md]
+trim_trailing_whitespace = false   # Allow trailing whitespace in Markdown files
+indent_style = space               # Use spaces for indentation in Markdown
+indent_size = 4
+
+# Settings for JSON and YAML files
+[*.{json,yml,yaml}]
+indent_style = space               # Use spaces for indentation in JSON and YAML
+indent_size = 2
+
+# Settings for Makefile
+[Makefile]
+indent_style = tab                 # Makefiles require tab indentation
