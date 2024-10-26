@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/leandrodaf/midi-client/internal/contracts/logger"
-	"github.com/leandrodaf/midi-client/internal/entity"
-	"github.com/leandrodaf/midi-client/pkg/pubsub"
+	"github.com/leandrodaf/pianalyze/internal/contracts/logger"
+	"github.com/leandrodaf/pianalyze/internal/entity"
+	"github.com/leandrodaf/pianalyze/pkg/pubsub"
 )
 
 // ListenerManager manages a set of listeners and processes events for them.

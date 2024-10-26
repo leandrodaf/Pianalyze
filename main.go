@@ -1,6 +1,6 @@
 package main
 
-import "github.com/leandrodaf/midi-client/cmd"
+import "github.com/leandrodaf/pianalyze/cmd"
 
 // The main entry point for the MIDI client application.
 func main() {

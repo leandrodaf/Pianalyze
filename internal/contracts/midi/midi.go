@@ -1,6 +1,6 @@
 package midi
 
-import "github.com/leandrodaf/midi-client/internal/entity"
+import "github.com/leandrodaf/pianalyze/internal/entity"
 
 // ClientMIDI defines an interface for managing MIDI client operations.
 type ClientMIDI interface {

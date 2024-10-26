@@ -6,9 +6,9 @@ package mididarwin
 import (
 	"fmt"
 
-	"github.com/leandrodaf/midi-client/internal/contracts/logger"
-	"github.com/leandrodaf/midi-client/internal/contracts/midi"
-	"github.com/leandrodaf/midi-client/internal/entity"
+	"github.com/leandrodaf/pianalyze/internal/contracts/logger"
+	"github.com/leandrodaf/pianalyze/internal/contracts/midi"
+	"github.com/leandrodaf/pianalyze/internal/entity"
 )
 
 // ClientMidDummy is a dummy implementation of the ClientMIDI interface for non-macOS systems.

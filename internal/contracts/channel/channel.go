@@ -1,7 +1,7 @@
 package channel
 
 import (
-	"github.com/leandrodaf/midi-client/internal/entity"
+	"github.com/leandrodaf/pianalyze/internal/entity"
 )
 
 // MIDIEventPublisher defines an interface for publishing and managing MIDI events.

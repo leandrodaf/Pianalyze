@@ -9,9 +9,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/leandrodaf/midi-client/internal/contracts/logger"
-	"github.com/leandrodaf/midi-client/internal/contracts/midi"
-	"github.com/leandrodaf/midi-client/internal/entity"
+	"github.com/leandrodaf/pianalyze/internal/contracts/logger"
+	"github.com/leandrodaf/pianalyze/internal/contracts/midi"
+	"github.com/leandrodaf/pianalyze/internal/entity"
 	"github.com/youpy/go-coremidi"
 )
 

@@ -6,15 +6,15 @@ import (
 	"math"
 	"time"
 
-	channelMIDI "github.com/leandrodaf/midi-client/internal/channel"
-	"github.com/leandrodaf/midi-client/internal/contracts/channel"
-	"github.com/leandrodaf/midi-client/internal/contracts/logger"
-	"github.com/leandrodaf/midi-client/internal/contracts/midi"
-	"github.com/leandrodaf/midi-client/internal/listeners"
-	"github.com/leandrodaf/midi-client/pkg/environment"
-	zaplogger "github.com/leandrodaf/midi-client/pkg/logger"
-	midiClient "github.com/leandrodaf/midi-client/pkg/midi"
-	"github.com/leandrodaf/midi-client/pkg/pubsub"
+	channelMIDI "github.com/leandrodaf/pianalyze/internal/channel"
+	"github.com/leandrodaf/pianalyze/internal/contracts/channel"
+	"github.com/leandrodaf/pianalyze/internal/contracts/logger"
+	"github.com/leandrodaf/pianalyze/internal/contracts/midi"
+	"github.com/leandrodaf/pianalyze/internal/listeners"
+	"github.com/leandrodaf/pianalyze/pkg/environment"
+	zaplogger "github.com/leandrodaf/pianalyze/pkg/logger"
+	midiClient "github.com/leandrodaf/pianalyze/pkg/midi"
+	"github.com/leandrodaf/pianalyze/pkg/pubsub"
 )
 
 // SetupLogger initializes the logging system.

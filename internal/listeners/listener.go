@@ -1,6 +1,6 @@
 package listeners
 
-import "github.com/leandrodaf/midi-client/pkg/pubsub"
+import "github.com/leandrodaf/pianalyze/pkg/pubsub"
 
 // Listener defines an interface for processing incoming pubsub messages.
 type Listener interface {

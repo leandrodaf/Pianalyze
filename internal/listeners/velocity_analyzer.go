@@ -3,7 +3,7 @@ package listeners
 import (
 	"fmt"
 
-	"github.com/leandrodaf/midi-client/pkg/pubsub"
+	"github.com/leandrodaf/pianalyze/pkg/pubsub"
 )
 
 // VelocityAnalyzerListener analyzes note velocity from MIDI messages and publishes the results.

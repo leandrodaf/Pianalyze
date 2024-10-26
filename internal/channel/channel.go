@@ -3,8 +3,8 @@ package channel
 import (
 	"sync/atomic"
 
-	"github.com/leandrodaf/midi-client/internal/contracts/channel"
-	"github.com/leandrodaf/midi-client/internal/entity"
+	"github.com/leandrodaf/pianalyze/internal/contracts/channel"
+	"github.com/leandrodaf/pianalyze/internal/entity"
 )
 
 // EventChannel manages the publication and retrieval of MIDI events.

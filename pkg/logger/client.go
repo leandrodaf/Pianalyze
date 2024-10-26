@@ -4,7 +4,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/leandrodaf/midi-client/internal/contracts/logger"
+	"github.com/leandrodaf/pianalyze/internal/contracts/logger"
 	"go.uber.org/zap"
 )
 

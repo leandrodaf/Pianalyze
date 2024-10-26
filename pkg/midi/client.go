@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/leandrodaf/midi-client/internal/contracts/logger"
-	"github.com/leandrodaf/midi-client/internal/contracts/midi"
-	mididarwin "github.com/leandrodaf/midi-client/pkg/midi/mididarwin"
-	midiwindows "github.com/leandrodaf/midi-client/pkg/midi/midiwindows"
+	"github.com/leandrodaf/pianalyze/internal/contracts/logger"
+	"github.com/leandrodaf/pianalyze/internal/contracts/midi"
+	mididarwin "github.com/leandrodaf/pianalyze/pkg/midi/mididarwin"
+	midiwindows "github.com/leandrodaf/pianalyze/pkg/midi/midiwindows"
 )
 
 // NewMIDIClient returns an instance of ClientMIDI based on the current operating system.
