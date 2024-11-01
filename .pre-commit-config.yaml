@@ -1,0 +1,16 @@
+repos:
+  # Hooks de validação padrão
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+
+  # Hook para GolangCI-Lint
+  - repo: https://github.com/golangci/golangci-lint
+    rev: v1.61.0  # Use a última versão estável ou a versão que preferir
+    hooks:
+      - id: golangci-lint
+        args: ["--fast"]  # Executa uma análise mais rápida
