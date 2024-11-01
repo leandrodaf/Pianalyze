@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"sync"
 	"syscall"
+	"time"
 
 	"github.com/leandrodaf/midi/sdk/contracts"
 	"github.com/leandrodaf/midi/sdk/midi"
@@ -15,11 +16,11 @@ import (
 	"go.uber.org/zap"
 )
 
-// Start initializes the MIDI event capture process and sets up the pipeline processor.
+// Start initializes MIDI event capture and sets up a pipeline to process the captured events.
 func Start() {
 	logger := InitLogger()
 
-	// Sets up the MIDI client with specific logging level and event filter.
+	// Configure MIDI client with specific logging level and event filters.
 	midiClient, err := midi.NewMIDIClient(
 		contracts.WithLogLevel(contracts.InfoLevel),
 		contracts.WithMIDIEventFilter(contracts.MIDIEventFilter{
@@ -31,37 +32,52 @@ func Start() {
 		return
 	}
 
-	// Selects and configures the MIDI device.
-	deviceID, err := SetupDevice(midiClient)
+	// Create a cancellable context for graceful shutdown handling.
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	// Channels for handling OS interrupt signals and tracking shutdown completion.
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM)
+	done := make(chan struct{})
+	closeOnce := sync.Once{}
+
+	// stopCapture handles MIDI capture shutdown, ensuring resources are released only once.
+	stopCapture := func(reason string) {
+		logger.Info(reason)
+		if err := midiClient.Stop(); err != nil {
+			logger.Error("Error stopping MIDI capture", zap.Error(err))
+		}
+		cancel()
+		closeOnce.Do(func() { close(done) })
+	}
+
+	// Select and configure the MIDI device.
+	deviceID, err := SetupDevice(ctx, midiClient)
 	if err != nil {
 		logger.Fatal(constants.MsgDeviceSelectionError, zap.Error(err))
 		return
 	}
 	logger.Info(constants.MsgMIDIClientSetupSuccess, zap.Int("deviceID", deviceID))
 
-	// Sets up a buffered channel for capturing MIDI events.
+	// Create a buffered channel for capturing MIDI events.
 	eventChannel := make(chan contracts.MIDI, constants.MIDIChannelBufferSize)
+
+	// Start capturing MIDI events.
 	midiClient.StartCapture(eventChannel)
 
-	// Initializes the pipeline processor with the configured logger.
+	// Initialize pipeline processor to handle MIDI events with the configured logger.
 	pipelineProcessor := pipeline.NewProcessor(logger)
-
-	// Create a cancellable context
-	ctx, cancel := context.WithCancel(context.Background())
 
 	var wg sync.WaitGroup
 
-	// Channel to listen for OS signals (like CTRL+C)
-	signalChan := make(chan os.Signal, 1)
-	signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM) // Capture CTRL+C and SIGTERM
-
-	// Goroutine to process incoming MIDI events.
+	// Goroutine for processing incoming MIDI events through the pipeline.
 	wg.Add(1)
 	go func() {
-		defer wg.Done() // Decrement the WaitGroup counter when the goroutine completes
+		defer wg.Done()
 		for event := range eventChannel {
-			ctx := internalContext.NewPipelineContext(ctx, event)
-			if err := pipelineProcessor.Process(ctx); err != nil {
+			pipelineCtx := internalContext.NewPipelineContext(ctx, event)
+			if err := pipelineProcessor.Process(pipelineCtx); err != nil {
 				logger.Error(constants.MsgMIDIProcessingError, zap.Error(err))
 			}
 		}
@@ -69,17 +85,32 @@ func Start() {
 
 	logger.Info(constants.MsgMIDIEventCaptureStarted)
 
-	// Wait for a signal
-	<-signalChan
-	cancel() // Cancel the context to signal goroutines to stop
+	// Goroutine to handle OS interrupt signals and initiate shutdown.
+	go func() {
+		<-signalChan
+		stopCapture("Received shutdown signal, stopping capture...")
+	}()
 
-	logger.Info("Received shutdown signal, stopping...")
+	// Optional timeout-based shutdown mechanism (e.g., after 60 seconds).
+	go func() {
+		timer := time.NewTimer(60 * time.Second)
+		defer timer.Stop()
+		select {
+		case <-timer.C:
+			stopCapture("Timeout reached, stopping capture...")
+		case <-done:
+			// Do nothing if already shutdown.
+		}
+	}()
 
-	// Close the event channel to stop the processing goroutine
-	close(eventChannel) // Close the event channel to stop the processing goroutine
-	wg.Wait()           // Wait for the processing goroutine to finish
+	// Wait for the shutdown signal.
+	<-done
 
-	defer func() { _ = midiClient.Stop() }()
+	// Close the event channel to signal end of event processing.
+	close(eventChannel)
+
+	// Wait for all events to be processed.
+	wg.Wait()
 
 	logger.Info("Shutdown complete")
 }

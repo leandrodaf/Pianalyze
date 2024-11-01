@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"log"
 
@@ -10,7 +11,7 @@ import (
 )
 
 // SetupDevice selects and configures the MIDI device.
-func SetupDevice(adapter contracts.ClientMIDI) (int, error) {
+func SetupDevice(ctx context.Context, adapter contracts.ClientMIDI) (int, error) {
 	devices, err := adapter.ListDevices()
 	if err != nil {
 		return 0, err
@@ -22,20 +23,39 @@ func SetupDevice(adapter contracts.ClientMIDI) (int, error) {
 	for i, device := range devices {
 		fmt.Printf("[%d] %s\n", i, device.Name)
 	}
-	var deviceID int
-	fmt.Print("Choose a MIDI device: ")
-	_, err = fmt.Scanf("%d", &deviceID)
-	if err != nil {
+
+	// Canal para receber a entrada do usuário.
+	inputChan := make(chan int)
+	// Canal para receber erros da leitura de entrada.
+	errorChan := make(chan error)
+
+	// Goroutine para ler a entrada do usuário.
+	go func() {
+		var deviceID int
+		fmt.Print("Choose a MIDI device: ")
+		_, err := fmt.Scanf("%d", &deviceID)
+		if err != nil {
+			errorChan <- err
+			return
+		}
+		inputChan <- deviceID
+	}()
+
+	select {
+	case <-ctx.Done():
+		return 0, fmt.Errorf("selection canceled: %w", ctx.Err())
+	case err := <-errorChan:
 		return 0, err
+	case deviceID := <-inputChan:
+		if deviceID < 0 || deviceID >= len(devices) {
+			return deviceID, fmt.Errorf(constants.ErrInvalidDeviceID)
+		}
+		err = adapter.SelectDevice(deviceID)
+		if err != nil {
+			return deviceID, err
+		}
+		return deviceID, nil
 	}
-	if deviceID < 0 || deviceID >= len(devices) {
-		return deviceID, fmt.Errorf(constants.ErrInvalidDeviceID)
-	}
-	err = adapter.SelectDevice(deviceID)
-	if err != nil {
-		return deviceID, err
-	}
-	return deviceID, nil
 }
 
 // BuildMode será definida no momento da compilação
